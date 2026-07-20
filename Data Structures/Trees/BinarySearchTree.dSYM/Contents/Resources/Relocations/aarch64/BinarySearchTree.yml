@@ -1,0 +1,15 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/net/Documents/GitHub/Code/Advanced Data Structures/Data Structures/Trees/BinarySearchTree'
+relocations:
+  - { offset: 0x19, size: 0x8, addend: 0x0, symName: _newTree, symObjAddr: 0x0, symBinAddr: 0x100000560, symSize: 0x14 }
+  - { offset: 0xE8, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x468, symBinAddr: 0x1000009C8, symSize: 0x84 }
+  - { offset: 0x112, size: 0x8, addend: 0x0, symName: _treeAscendPrint, symObjAddr: 0x43C, symBinAddr: 0x10000099C, symSize: 0x2C }
+  - { offset: 0x142, size: 0x8, addend: 0x0, symName: _treeNodePrint, symObjAddr: 0x3DC, symBinAddr: 0x10000093C, symSize: 0x60 }
+  - { offset: 0x16C, size: 0x8, addend: 0x0, symName: _treeRemove, symObjAddr: 0x22C, symBinAddr: 0x10000078C, symSize: 0x1B0 }
+  - { offset: 0x1D9, size: 0x8, addend: 0x0, symName: _treeMin, symObjAddr: 0x1FC, symBinAddr: 0x10000075C, symSize: 0x30 }
+  - { offset: 0x203, size: 0x8, addend: 0x0, symName: _treeTransplant, symObjAddr: 0x14C, symBinAddr: 0x1000006AC, symSize: 0xB0 }
+  - { offset: 0x24B, size: 0x8, addend: 0x0, symName: _treeInsert, symObjAddr: 0x40, symBinAddr: 0x1000005A0, symSize: 0x10C }
+  - { offset: 0x2A6, size: 0x8, addend: 0x0, symName: _treeEmpty, symObjAddr: 0x14, symBinAddr: 0x100000574, symSize: 0x2C }
+  - { offset: 0x2D4, size: 0x8, addend: 0x0, symName: _newTree, symObjAddr: 0x0, symBinAddr: 0x100000560, symSize: 0x14 }
+...
