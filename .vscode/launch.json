@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C/C++: gcc-15 build and debug active file",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "cwd": "${fileDirname}",
+            "preLaunchTask": "intensive programming",
+            "sourceMap": {
+                "${fileDirname}": "${fileDirname}"
+            },
+            "initCommands": [
+                "settings set target.inline-breakpoint-strategy always"
+            ]
+        }
+    ]
+}

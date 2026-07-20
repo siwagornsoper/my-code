@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "Linux (Strict C89)",
+            "compilerPath": "/opt/homebrew/bin/gcc-15",
+            "cStandard": "c89",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "gcc-arm64",
+            "compilerArgs": [
+                "-Wall",
+                "-Wextra",
+                "-Wpedantic",
+                "-Werror",
+                "-std=c89",
+                "-pedantic-errors"
+            ],
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include",
+                "/opt/homebrew/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "__STRICT_ANSI__"
+            ]
+        }
+    ],
+    "version": 4
+}
