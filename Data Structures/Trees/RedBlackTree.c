@@ -123,7 +123,7 @@ void treeRemove(struct Tree *tree, int num){
     else{
         struct Node *successor;
 
-        successor = treeFindMin(remove);
+        successor = treeFindMin(remove->right);
 
         if(successor != remove->right){
             treeTransplant(tree, successor, successor->right);
@@ -135,6 +135,8 @@ void treeRemove(struct Tree *tree, int num){
         successor->left = remove->left;
         remove->left->p = successor;
     }
+
+    free(remove);
 }
 
 void printAscendingHelper(struct Node *node){
@@ -164,4 +166,6 @@ int main(){
     treeRemove(&tree, 6);
 
     printAscending(&tree);
+
+    return 0;
 }
