@@ -485,10 +485,19 @@ int validQueen(struct Piece board[8][8], int prevX, int prevY, int newX, int new
 
 /*is this a valid knight move?*/
 int validKnight(struct Piece board[8][8], int prevX, int prevY, int newX, int newY){
+    int xDiff;
+    int yDiff;
+    
     /*false if a piece is attacking its own color*/
     if(board[newX][newY].type && (board[newX][newY].color == board[prevX][prevY].color)){
         return 0;
     }
+
+    xDiff = abs(newX - prevX);
+    yDiff = abs(newY - prevY);
+
+    if((xDiff == 1 && yDiff == 2) || (xDiff == 2 && yDiff == 1))
+        return 1;
     
     return 0;
 }

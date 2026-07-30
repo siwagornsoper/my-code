@@ -320,13 +320,6 @@ int main(void){
     treeInsert(&tree, 6);
     treeInsert(&tree, 7);
 
-    treeRemove(&tree, 8);
-    treeRemove(&tree, 5);
-    treeRemove(&tree, 6);
-    treeRemove(&tree, 7);
-    treeRemove(&tree, 4);
-    treeRemove(&tree, 10);
-    treeRemove(&tree, 12);
 
     treeAscendPrint(&tree);
 

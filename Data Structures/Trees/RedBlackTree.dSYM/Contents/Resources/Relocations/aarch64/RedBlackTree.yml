@@ -2,15 +2,15 @@
 triple:          'arm64-apple-darwin'
 binary-path:     '/Users/net/Documents/GitHub/my-code/Data Structures/Trees/RedBlackTree'
 relocations:
-  - { offset: 0x19, size: 0x8, addend: 0x0, symName: _newTree, symObjAddr: 0x0, symBinAddr: 0x100000560, symSize: 0x14 }
-  - { offset: 0xE8, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x44C, symBinAddr: 0x1000009AC, symSize: 0x6C }
-  - { offset: 0x112, size: 0x8, addend: 0x0, symName: _printAscending, symObjAddr: 0x420, symBinAddr: 0x100000980, symSize: 0x2C }
-  - { offset: 0x142, size: 0x8, addend: 0x0, symName: _printAscendingHelper, symObjAddr: 0x3C0, symBinAddr: 0x100000920, symSize: 0x60 }
-  - { offset: 0x16C, size: 0x8, addend: 0x0, symName: _treeRemove, symObjAddr: 0x284, symBinAddr: 0x1000007E4, symSize: 0x13C }
-  - { offset: 0x1D5, size: 0x8, addend: 0x0, symName: _treeTransplant, symObjAddr: 0x1F0, symBinAddr: 0x100000750, symSize: 0x94 }
-  - { offset: 0x221, size: 0x8, addend: 0x0, symName: _treeFindMin, symObjAddr: 0x1B8, symBinAddr: 0x100000718, symSize: 0x38 }
-  - { offset: 0x25A, size: 0x8, addend: 0x0, symName: _treeInsert, symObjAddr: 0xC4, symBinAddr: 0x100000624, symSize: 0xF4 }
-  - { offset: 0x2C4, size: 0x8, addend: 0x0, symName: _treeSearch, symObjAddr: 0x40, symBinAddr: 0x1000005A0, symSize: 0x84 }
-  - { offset: 0x310, size: 0x8, addend: 0x0, symName: _treeEmpty, symObjAddr: 0x14, symBinAddr: 0x100000574, symSize: 0x2C }
-  - { offset: 0x33E, size: 0x8, addend: 0x0, symName: _newTree, symObjAddr: 0x0, symBinAddr: 0x100000560, symSize: 0x14 }
+  - { offset: 0x19, size: 0x8, addend: 0x0, symName: _newTree, symObjAddr: 0x0, symBinAddr: 0x100000560, symSize: 0x4C }
+  - { offset: 0x102, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x738, symBinAddr: 0x100000C98, symSize: 0xA8 }
+  - { offset: 0x12C, size: 0x8, addend: 0x0, symName: _printAscending, symObjAddr: 0x704, symBinAddr: 0x100000C64, symSize: 0x34 }
+  - { offset: 0x15C, size: 0x8, addend: 0x0, symName: _printAscendingHelper, symObjAddr: 0x688, symBinAddr: 0x100000BE8, symSize: 0x7C }
+  - { offset: 0x195, size: 0x8, addend: 0x0, symName: _treeInsert, symObjAddr: 0x558, symBinAddr: 0x100000AB8, symSize: 0x130 }
+  - { offset: 0x1FB, size: 0x8, addend: 0x0, symName: _treeFixUp, symObjAddr: 0x348, symBinAddr: 0x1000008A8, symSize: 0x210 }
+  - { offset: 0x276, size: 0x8, addend: 0x0, symName: _rightRotation, symObjAddr: 0x234, symBinAddr: 0x100000794, symSize: 0x114 }
+  - { offset: 0x2BE, size: 0x8, addend: 0x0, symName: _leftRotation, symObjAddr: 0x110, symBinAddr: 0x100000670, symSize: 0x124 }
+  - { offset: 0x30A, size: 0x8, addend: 0x0, symName: _treeSearch, symObjAddr: 0x80, symBinAddr: 0x1000005E0, symSize: 0x90 }
+  - { offset: 0x356, size: 0x8, addend: 0x0, symName: _treeEmpty, symObjAddr: 0x4C, symBinAddr: 0x1000005AC, symSize: 0x34 }
+  - { offset: 0x384, size: 0x8, addend: 0x0, symName: _newTree, symObjAddr: 0x0, symBinAddr: 0x100000560, symSize: 0x4C }
 ...

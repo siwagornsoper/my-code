@@ -3,7 +3,7 @@
 
 struct Node{
     int item;
-
+    char color; /*1 is black, 0 is red*/
     struct Node *p;
     struct Node *right;
     struct Node *left;
@@ -11,17 +11,25 @@ struct Node{
 
 struct Tree{
     struct Node *root;
+    struct Node *NIL;
 };
 
 struct Tree newTree(){
     struct Tree tree;
-    tree.root = NULL;
+    
+    tree.NIL = malloc(sizeof(struct Node));
+    tree.NIL->color = 1;
+    tree.NIL->p = NULL;
+    tree.NIL->left = NULL;
+    tree.NIL->right = NULL;
+
+    tree.root = tree.NIL;
 
     return tree;
 }
 
 int treeEmpty(struct Tree *tree){
-    if(tree->root == NULL)
+    if(tree->root == tree->NIL)
         return 1;
     else
         return 0;
@@ -32,7 +40,7 @@ struct Node *treeSearch(struct Tree *tree, int num){
 
     i = tree->root;
 
-    while(i != NULL){
+    while(i != tree->NIL){
         if(i->item > num)
             i = i->left;
         else if(i->item < num)
@@ -41,7 +49,117 @@ struct Node *treeSearch(struct Tree *tree, int num){
             return i;
     }
 
-    return NULL;
+    return tree->NIL;
+}
+
+void leftRotation(struct Tree *tree, struct Node *node){
+    struct Node *child;
+
+    child = node->right;
+    
+    if(node->p == tree->NIL){
+        tree->root = child;
+        child->p = tree->NIL;
+    }
+    else{
+        /*if the node is a right child*/
+        if(node->p->right != tree->NIL && node->p->right == node){
+            node->p->right = child;
+            child->p = node->p;
+        }
+        else{/*the node is a left child*/
+            node->p->left = child;
+            child->p = node->p;
+        } 
+    }
+
+    node->right = child->left;
+    if(node->right != tree->NIL)
+        node->right->p = node;
+    node->p = child;
+    child->left = node;
+}
+
+
+
+void rightRotation(struct Tree *tree, struct Node *node){
+    struct Node *child;
+
+    child = node->left;
+
+    if(node->p == tree->NIL){
+        child->p = tree->NIL;
+        tree->root = child;
+    }
+    else{
+        child->p = node->p;
+        if(node->p->right != tree->NIL && node->p->right == node){
+            node->p->right = child;
+        }
+        else
+            node->p->left = child;
+    }
+
+    node->left = child->right;
+    if(child->right != tree->NIL){
+        child->right->p = node;
+    }
+
+    node->p = child;
+    child->right = node;
+}
+
+void treeFixUp(struct Tree *tree, struct Node *z){
+    while(z->p->color == 0){
+
+        if(z->p->p->left == z->p){ /*if z's parent is a left child*/
+            struct Node *y = z->p->p->right; /*z's uncle*/
+            
+            if(y->color == 0){ /*uncle is red*/
+                y->color = 1;
+                z->p->color = 1;
+                z->p->p->color = 0;
+                
+                z = z->p->p;
+            }
+            else{ /*uncle is black*/
+                if(z->p->right == z){ /*z is a right child*/
+                    leftRotation(tree, z->p);
+
+                    z = z->left; /*the former parent becomes z*/
+                }
+                
+                z->p->color = 1;
+                z->p->p->color = 0;
+
+                rightRotation(tree, z->p->p);
+            }
+        }
+        else{ /*z's parent is a right child*/
+            struct Node *y = z->p->p->left; /*z's uncle*/
+            
+            if(y->color == 0){ /*uncle is red*/
+                y->color = 1;
+                z->p->color = 1;
+                z->p->p->color = 0;
+                
+                z = z->p->p;
+            }
+            else{ /*uncle is black*/
+                if(z->p->left == z){ /*z is a left child*/
+                    rightRotation(tree, z->p);
+
+                    z = z->right; /*the former parent becomes z*/
+                }
+                
+                z->p->color = 1;
+                z->p->p->color = 0;
+
+                leftRotation(tree, z->p->p);
+            }
+        }
+    }
+    tree->root->color = 1;
 }
 
 void treeInsert(struct Tree *tree, int num){
@@ -51,13 +169,13 @@ void treeInsert(struct Tree *tree, int num){
 
     newNode = malloc(sizeof(struct Node));
     newNode->item = num;
-    newNode->right = NULL;
-    newNode->left = NULL;
+    newNode->right = tree->NIL;
+    newNode->left = tree->NIL;
 
     i = tree->root;
-    parent = NULL;
+    parent = tree->NIL;
 
-    while(i != NULL){
+    while(i != tree->NIL){
         parent = i;
 
         if(i->item > num){
@@ -70,86 +188,34 @@ void treeInsert(struct Tree *tree, int num){
 
     newNode->p = parent;
 
-    if(parent == NULL){
+    if(parent == tree->NIL){
         tree->root = newNode;
     }
     else if(parent->item > num)
         parent->left = newNode;
     else
         parent->right = newNode;
+
+    newNode->color = 0;
+
+    treeFixUp(tree, newNode);
 }
 
-struct Node *treeFindMin(struct Node *node){
-    struct Node *min;
-    
-    while(node != NULL){
-        min = node;
-        node = node->left;
-    }
 
-    return min;
-}
+/*remove remains unimplemented*/
 
-void treeTransplant(struct Tree *tree, struct Node *node, struct Node *transplant){
-    if(transplant != NULL){
-        transplant->p = node->p;
-    }
-    
-    if(node->p == NULL){
-        tree->root = transplant;
-    }
-    else if(node->p->right == node){
-        node->p->right = transplant;
-    }
-    else{
-        node->p->left = transplant;
-    }
-}
 
-void treeRemove(struct Tree *tree, int num){
-    struct Node *remove;
-    
-    remove = treeSearch(tree, num);
-
-    if(remove == NULL)
+void printAscendingHelper(struct Tree *tree, struct Node *node){
+    if(node == tree->NIL)
         return;
 
-    if(remove->left == NULL){
-        treeTransplant(tree, remove, remove->right);
-    }
-    else if(remove->right == NULL){
-        treeTransplant(tree, remove, remove->left);
-    }
-    else{
-        struct Node *successor;
-
-        successor = treeFindMin(remove->right);
-
-        if(successor != remove->right){
-            treeTransplant(tree, successor, successor->right);
-            successor->right = remove->right;
-            remove->right->p = successor;
-        }
-        
-        treeTransplant(tree, remove, successor);
-        successor->left = remove->left;
-        remove->left->p = successor;
-    }
-
-    free(remove);
-}
-
-void printAscendingHelper(struct Node *node){
-    if(node == NULL)
-        return;
-
-    printAscendingHelper(node->left);
+    printAscendingHelper(tree, node->left);
     printf("%i ", node->item);
-    printAscendingHelper(node->right);
+    printAscendingHelper(tree, node->right);
 }
 
 void printAscending(struct Tree *tree){
-    printAscendingHelper(tree->root);
+    printAscendingHelper(tree, tree->root);
     printf("\n");
 }
 
@@ -158,12 +224,17 @@ int main(){
 
     tree = newTree();
 
+    treeInsert(&tree, 4);
     treeInsert(&tree, 5);
     treeInsert(&tree, 6);
-    treeInsert(&tree, 4);
-    treeRemove(&tree, 5);
-    treeRemove(&tree, 4);
-    treeRemove(&tree, 6);
+    treeInsert(&tree, 7);
+    treeInsert(&tree, 8);
+    treeInsert(&tree, 9);
+    treeInsert(&tree, 10);
+    treeInsert(&tree, 11);
+    treeInsert(&tree, 12);
+    treeInsert(&tree, 13);
+    treeInsert(&tree, 14);
 
     printAscending(&tree);
 
