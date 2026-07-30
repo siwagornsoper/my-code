@@ -107,7 +107,7 @@ int SLL_contains(struct List *list, int item){
 }
 
 struct Graph{
-    struct List *verices;
+    struct List *vertices;
     int numVertices;
     int allocated;
 };
@@ -122,11 +122,12 @@ struct Graph Graph_new(){
     return graph;
 }
 
-struct Graph Graph_empty(struct Graph *graph){
+int Graph_empty(struct Graph *graph){
     return graph->vertices == NULL;
 }
 
-void newVertex(struct Graph *graph){
+/*adds a vertex*/
+void Graph_vertex(struct Graph *graph){
     graph->numVertices++;
 
     if(Graph_empty(graph)){
@@ -162,10 +163,22 @@ void newVertex(struct Graph *graph){
     graph->vertices[graph->numVertices - 1].tail = NULL;
 }
 
-/*design add edges*/
+/*
+adds an edge
+vertex1 -> vertex2
+*/
+void Graph_edge(struct Graph *graph, int vertex1, int vertex2){
+    SLL_append(graph->vertices+vertex1,vertex2);
+}
 
 int main(){
-    
+    struct Graph graph;
+    graph = Graph_new();
+
+    Graph_vertex(&graph);
+    Graph_edge(&graph, 0, 0);
+
+    printf("%i\n", SLL_contains(&graph.vertices[0],0));
 
     return 0;
 }
