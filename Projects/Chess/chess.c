@@ -5,8 +5,6 @@
 struct Piece{
     char type; /*K is king N is knight Q is queen B is bishop R is rook P is pawn 0 is an empty tile*/
     char color; /*0 for white 1 for black*/
-    char whiteAttack; /*squares that white controls*/
-    char blackAttack; /*squares that black controls*/
     char firstMove;
 };
 
@@ -15,151 +13,7 @@ struct Piece check(struct Piece board[8][8], int x, int y){
     return board[x][y];
 }
 
-/*scans diagonally up and marks*/
-void scanUpLeft(struct Piece board[8][8], int x, int y){
-    int color = board[x][y].color;
-    x--;
-    y++;
 
-    /*loops until either a piece is found or the scan goes out of bounds*/
-    while(x >= 0 && y <= 7){
-        if(color){
-            board[x][y].whiteAttack = 1;
-        }
-        else{
-            board[x][y].blackAttack = 1;
-        }
-
-        x--;
-        y++;
-    }
-}
-
-
-void scanUpRight(struct Piece board[8][8], int x, int y){
-    int color = board[x][y].color;
-    x++;
-    y++;
-
-    /*loops until either a piece is found or the scan goes out of bounds*/
-    while(x <= 7 && y <= 7){
-        if(color){
-            board[x][y].whiteAttack = 1;
-        }
-        else{
-            board[x][y].blackAttack = 1;
-        }
-
-        x++;
-        y++;
-    }
-}
-
-void scanDownLeft(struct Piece board[8][8], int x, int y){
-    int color = board[x][y].color;
-    x--;
-    y--;
-
-    /*loops until either a piece is found or the scan goes out of bounds*/
-    while(x >= 0 && y >= 0){
-        if(color){
-            board[x][y].whiteAttack = 1;
-        }
-        else{
-            board[x][y].blackAttack = 1;
-        }
-
-        x--;
-        y--;
-    }
-}
-
-void scanDownRight(struct Piece board[8][8], int x, int y){
-    int color = board[x][y].color;
-    x++;
-    y--;
-
-    /*loops until either a piece is found or the scan goes out of bounds*/
-    while(x <= 7 && y >= 0){
-        if(color){
-            board[x][y].whiteAttack = 1;
-        }
-        else{
-            board[x][y].blackAttack = 1;
-        }
-
-        x++;
-        y--;
-    }
-}
-
-void scanUp(struct Piece board[8][8], int x, int y){
-    int color = board[x][y].color;
-    y++;
-
-    /*loops until either a piece is found or the scan goes out of bounds*/
-    while(y <= 7){
-        if(color){
-            board[x][y].whiteAttack = 1;
-        }
-        else{
-            board[x][y].blackAttack = 1;
-        }
-
-        y++;
-    }
-}
-
-void scanDown(struct Piece board[8][8], int x, int y){
-    int color = board[x][y].color;
-    y--;
-
-    /*loops until either a piece is found or the scan goes out of bounds*/
-    while(y >= 0){
-        if(color){
-            board[x][y].whiteAttack = 1;
-        }
-        else{
-            board[x][y].blackAttack = 1;
-        }
-
-        y--;
-    }
-}
-
-void scanLeft(struct Piece board[8][8], int x, int y){
-    int color = board[x][y].color;
-    x--;
-
-    /*loops until either a piece is found or the scan goes out of bounds*/
-    while(x >= 0){
-        if(color){
-            board[x][y].whiteAttack = 1;
-        }
-        else{
-            board[x][y].blackAttack = 1;
-        }
-
-        x--;
-    }
-}
-
-void scanRight(struct Piece board[8][8], int x, int y){
-    int color = board[x][y].color;
-    x++;
-
-    /*loops until either a piece is found or the scan goes out of bounds*/
-    while(x <= 7){
-        if(color){
-            board[x][y].whiteAttack = 1;
-        }
-        else{
-            board[x][y].blackAttack = 1;
-        }
-
-        x++;
-    }
-}
 
 /*tests whether a move is a valid up left diagonal move*/
 int testUpLeft(struct Piece board[8][8], int prevX, int prevY, int newX, int newY){
@@ -512,46 +366,57 @@ int validKing(struct Piece board[8][8], int prevX, int prevY, int newX, int newY
     return 0;
 }
 
-/*moves a piece from one place to another*/
-void move(struct Piece board[8][8], int prevX, int prevY, int newX, int newY){
+/*moves a piece from one place to another given the move is proper and then outputs if the move was successful*/
+int move(struct Piece board[8][8], int prevX, int prevY, int newX, int newY, int colorTurn){
     struct Piece empty;
+    struct Piece placeHolder;
     empty.type = 0;
     empty.color = 0;
 
+    if(board[prevX][prevY].color != colorTurn)
+        return 0;
+
+    /*each case represents one piece type. based on the piece type conditions are checked*/
     switch(board[prevX][prevY].type){
         case 'K':
             if(!validKing(board, prevX, prevY, newX, newY))
-                return;
+                return 0;
             break;
         case 'Q':
             if(!validQueen(board, prevX, prevY, newX, newY))
-                return;
+                return 0;
             break;
         case 'R':
             if(!validRook(board, prevX, prevY, newX, newY))
-                return;
+                return 0;
             break;
         case 'B':
             if(!validBishop(board, prevX, prevY, newX, newY))
-                return;
+                return 0;
             break;
         case 'N':
             if(!validKnight(board, prevX, prevY, newX, newY))
-                return;
+                return 0;
             break;
         case 'P':
             if(!validPawn(board, prevX, prevY, newX, newY))
-                return;
+                return 0;
             break;
         default:
-            return;
+            return 0;
     }
 
+    /*saves the captured piece and moves the chosen piece*/
+    placeHolder = board[newX][newY];
     board[newX][newY] = board[prevX][prevY];
     board[prevX][prevY] = empty;
+
+    /*king check*/
+
+        /*if king is in jeopardy, undo the move*/
 }
 
-
+/*creates a proper chess setup*/
 void createBoard(struct Piece board[8][8]){
     int i;
     int j;
@@ -628,7 +493,8 @@ void printBoard(struct Piece board[8][8]){
     printf("\n     a  b  c  d  e  f  g  h\n");
 }
 
-void stringMove(struct Piece board[8][8], char* string){
+/*converts the string into coordinates, moves the piece if the move is proper, then outputs if the move was successful*/
+int stringMove(struct Piece board[8][8], char* string, int colorTurn){
     int coord1;
     int coord2;
     int coord3;
@@ -643,13 +509,16 @@ void stringMove(struct Piece board[8][8], char* string){
         printf("invalid coords\n");
     }
     
-    move(board, coord1, coord2, coord3, coord4);
+    return move(board, coord1, coord2, coord3, coord4, colorTurn);
 }
 
 int main(int argc, char** argv){
     struct Piece board[8][8];
     char coordIO[6];
     char c;
+    int colorTurn;
+
+    colorTurn = 0; /*white's turn first*/
 
     createBoard(board);
 
@@ -659,7 +528,8 @@ int main(int argc, char** argv){
     while(1){
         fgets(coordIO, 6, stdin);
 
-        stringMove(board, coordIO);
+        if(stringMove(board, coordIO, colorTurn))
+            colorTurn = !colorTurn;
 
         printBoard(board);
 
