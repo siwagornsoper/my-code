@@ -8,13 +8,6 @@ struct Piece{
     char firstMove;
 };
 
-/*takes coordinates and says what is at those coordinates*/
-struct Piece check(struct Piece board[8][8], int x, int y){
-    return board[x][y];
-}
-
-
-
 /*tests whether a move is a valid up left diagonal move*/
 int testUpLeft(struct Piece board[8][8], int prevX, int prevY, int newX, int newY){
     int i;
@@ -358,11 +351,310 @@ int validKnight(struct Piece board[8][8], int prevX, int prevY, int newX, int ne
 
 /*is this a valid king move?*/
 int validKing(struct Piece board[8][8], int prevX, int prevY, int newX, int newY){
+    int xDiff;
+    int yDiff;
+    
     /*false if a piece is attacking its own color*/
     if(board[newX][newY].type && (board[newX][newY].color == board[prevX][prevY].color)){
         return 0;
     }
     
+    xDiff = abs(newX-prevX);
+    yDiff = abs(newY-prevY);
+
+    if(xDiff != 0 && xDiff != 1)
+        return 0;
+
+    if(yDiff != 0 && yDiff != 1)
+        return 0;
+
+    return 1;
+}
+
+/*determines if a player's own king was placed in danger as a result of a move*/
+int kingDanger(struct Piece board[8][8], int colorTurn){
+    int i;
+    int j;
+
+    int kingX;
+    int kingY;
+    
+    for(i = 0; i < 8; i++){
+        for(j = 0; j < 8; j++){
+            if(board[i][j].type == 'K' && board[i][j].color == colorTurn){
+                kingX = i;
+                kingY = j;
+                break;
+            } 
+        }
+    }
+
+    i = kingX + 2;
+
+    /*2 enemy knight checks*/
+    if(i < 8){
+        j = kingY + 1;
+
+        if(j < 8){
+            if(board[i][j].type == 'N' && board[i][j].color != colorTurn)
+                return 1;
+        }
+
+        j = kingY - 1;
+
+        if(j >= 0){
+            if(board[i][j].type == 'N' && board[i][j].color != colorTurn)
+                return 1;
+        }
+    }
+
+    i = kingX - 2;
+
+    /*2 enemy knight checks*/
+    if(i >= 0){
+        j = kingY + 1;
+
+        if(j < 8){
+            if(board[i][j].type == 'N' && board[i][j].color != colorTurn)
+                return 1;
+        }
+
+        j = kingY - 1;
+
+        if(j >= 0){
+            if(board[i][j].type == 'N' && board[i][j].color != colorTurn)
+                return 1;
+        }
+    }
+
+    i = kingX + 1;
+
+    /*2 enemy knight checks*/
+    if(i < 8){
+        j = kingY + 2;
+
+        if(j < 8){
+            if(board[i][j].type == 'N' && board[i][j].color != colorTurn)
+                return 1;
+        }
+
+        j = kingY - 2;
+
+        if(j >= 0){
+            if(board[i][j].type == 'N' && board[i][j].color != colorTurn)
+                return 1;
+        }
+    }
+
+    i = kingX - 1;
+
+    /*2 enemy knight checks*/
+    if(i >= 0){
+        j = kingY + 2;
+
+        if(j < 8){
+            if(board[i][j].type == 'N' && board[i][j].color != colorTurn)
+                return 1;
+        }
+
+        j = kingY - 2;
+
+        if(j >= 0){
+            if(board[i][j].type == 'N' && board[i][j].color != colorTurn)
+                return 1;
+        }
+    }
+
+    j = kingY;
+    /*rook/queen check*/
+    for(i = kingX + 1; i < 8; i++){
+        if(board[i][j].type != 0){
+            if(board[i][j].color != colorTurn && (board[i][j].type == 'R' || board[i][j].type == 'Q'))
+                return 1;
+            else
+                break;
+        }
+    }
+
+    /*rook/queen check*/
+    for(i = kingX - 1; i >= 0; i--){
+        if(board[i][j].type != 0){
+            if(board[i][j].color != colorTurn && (board[i][j].type == 'R' || board[i][j].type == 'Q'))
+                return 1;
+            else
+                break;
+        }
+    }
+
+    i = kingX;
+    /*rook/queen check*/
+    for(j = kingY + 1; j < 8; j++){
+        if(board[i][j].type != 0){
+            if(board[i][j].color != colorTurn && (board[i][j].type == 'R' || board[i][j].type == 'Q'))
+                return 1;
+            else
+                break;
+        }
+    }
+
+    /*rook/queen check*/
+    for(j = kingY - 1; j >= 0; j--){
+        if(board[i][j].type != 0){
+            if(board[i][j].color != colorTurn && (board[i][j].type == 'R' || board[i][j].type == 'Q'))
+                return 1;
+            else
+                break;
+        }
+    }
+
+    /*bishop/queen check*/
+    i = kingX + 1;
+    j = kingY + 1;
+    while(i < 8 && j < 8){
+        if(board[i][j].type != 0){
+            if(board[i][j].color != colorTurn && (board[i][j].type == 'B' || board[i][j].type == 'Q'))
+                return 1;
+            else
+                break;
+        }
+
+        i++;
+        j++;
+    }
+
+    /*bishop/queen check*/
+    i = kingX - 1;
+    j = kingY - 1;
+    while(i >= 0 && j >= 0){
+        if(board[i][j].type != 0){
+            if(board[i][j].color != colorTurn && (board[i][j].type == 'B' || board[i][j].type == 'Q'))
+                return 1;
+            else
+                break;
+        }
+
+        i--;
+        j--;
+    }
+
+    /*bishop/queen check*/
+    i = kingX + 1;
+    j = kingY - 1;
+    while(i < 8 && j >= 0){
+        if(board[i][j].type != 0){
+            if(board[i][j].color != colorTurn && (board[i][j].type == 'B' || board[i][j].type == 'Q'))
+                return 1;
+            else
+                break;
+        }
+
+        i++;
+        j--;
+    }
+
+    /*bishop/queen check*/
+    i = kingX - 1;
+    j = kingY + 1;
+    while(i >= 0 && j < 8){
+        if(board[i][j].type != 0){
+            if(board[i][j].color != colorTurn && (board[i][j].type == 'B' || board[i][j].type == 'Q'))
+                return 1;
+            else
+                break;
+        }
+
+        i--;
+        j++;
+    }
+
+    /*pawn check*/
+    if(colorTurn){ /*if black*/
+        j = kingY + 1;
+
+        if(j < 8){
+            i = kingX + 1;
+
+            if(i < 8){
+                if(board[i][j].type == 'P' && board[i][j].color != colorTurn)
+                    return 1;
+            }
+
+            i = kingX - 1;
+            
+            if(i >= 0){
+                if(board[i][j].type == 'P' && board[i][j].color != colorTurn)
+                    return 1;
+            }
+        }
+    }
+    else{
+        j = kingY - 1;
+
+        if(j >= 0){
+            i = kingX + 1;
+
+            if(i < 8){
+                if(board[i][j].type == 'P' && board[i][j].color != colorTurn)
+                    return 1;
+            }
+
+            i = kingX - 1;
+            
+            if(i >= 0){
+                if(board[i][j].type == 'P' && board[i][j].color != colorTurn)
+                    return 1;
+            }
+        }
+    }
+
+    i = kingX + 1;
+
+    /*king check*/
+    if(i < 8){
+        if(board[i][kingY].type == 'K')
+            return 1;
+
+        j = kingY - 1;
+
+        if(j >= 0 && board[i][j].type == 'K')
+            return 1;
+
+        j = kingY + 1;
+
+        if(j < 8 && board[i][j].type == 'K')
+            return 1;
+    }
+
+    i = kingX - 1;
+
+    /*king check*/
+    if(i >= 0){
+        if(board[i][kingY].type == 'K')
+            return 1;
+
+        j = kingY - 1;
+
+        if(j >= 0 && board[i][j].type == 'K')
+            return 1;
+
+        j = kingY + 1;
+
+        if(j < 8 && board[i][j].type == 'K')
+            return 1;
+    }
+
+    j = kingY - 1;
+
+    /*king check*/
+    if(j >= 0 && board[kingX][j].type == 'K')
+        return 1;
+
+    j = kingY + 1;
+
+    /*king check*/
+    if(j < 8 && board[kingX][j].type == 'K')
+        return 1;
+
     return 0;
 }
 
@@ -373,34 +665,53 @@ int move(struct Piece board[8][8], int prevX, int prevY, int newX, int newY, int
     empty.type = 0;
     empty.color = 0;
 
-    if(board[prevX][prevY].color != colorTurn)
+    if(board[prevX][prevY].color != colorTurn){
+        if(colorTurn){
+            printf("it isn't white's turn");
+        }
+        else{
+            printf("it isn't black's turn");
+        }
         return 0;
+    }
 
     /*each case represents one piece type. based on the piece type conditions are checked*/
     switch(board[prevX][prevY].type){
         case 'K':
-            if(!validKing(board, prevX, prevY, newX, newY))
+            if(!validKing(board, prevX, prevY, newX, newY)){
+                printf("Invalid king move");
                 return 0;
+            }
             break;
         case 'Q':
-            if(!validQueen(board, prevX, prevY, newX, newY))
+            if(!validQueen(board, prevX, prevY, newX, newY)){
+                printf("Invalid queen move");
                 return 0;
+            }
             break;
         case 'R':
-            if(!validRook(board, prevX, prevY, newX, newY))
+            if(!validRook(board, prevX, prevY, newX, newY)){
+                printf("Invalid rook move");
                 return 0;
+            }
             break;
         case 'B':
-            if(!validBishop(board, prevX, prevY, newX, newY))
+            if(!validBishop(board, prevX, prevY, newX, newY)){
+                printf("Invalid bishop move");
                 return 0;
+            }
             break;
         case 'N':
-            if(!validKnight(board, prevX, prevY, newX, newY))
+            if(!validKnight(board, prevX, prevY, newX, newY)){
+                printf("Invalid knight move");
                 return 0;
+            }
             break;
         case 'P':
-            if(!validPawn(board, prevX, prevY, newX, newY))
+            if(!validPawn(board, prevX, prevY, newX, newY)){
+                printf("Invalid pawn move");
                 return 0;
+            }
             break;
         default:
             return 0;
@@ -411,9 +722,17 @@ int move(struct Piece board[8][8], int prevX, int prevY, int newX, int newY, int
     board[newX][newY] = board[prevX][prevY];
     board[prevX][prevY] = empty;
 
-    /*king check*/
+    /*king danger check*/
+    if(kingDanger(board, colorTurn)){
+        /*if king is in jeopardy, undo the move and report the unsuccessful move*/
+        board[prevX][prevY] = board[newX][newY];
+        board[newX][newY] = placeHolder;
+        printf("That move puts the king in danger");
 
-        /*if king is in jeopardy, undo the move*/
+        return 0;
+    }
+
+    return 1;
 }
 
 /*creates a proper chess setup*/
